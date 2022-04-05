@@ -56,3 +56,4 @@ _darcs
 ## additional ignores
 .idea
 .DS_Store
+!/*.png
