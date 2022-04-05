@@ -1,0 +1,5 @@
+shapely
+cython
+scipy
+setuptools==58.2.0
+Pillow==8.4.0

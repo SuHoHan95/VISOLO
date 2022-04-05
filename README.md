@@ -1,57 +1,122 @@
-# VISOLO: Grid-Based Space-Time Aggregation for Efficient Online Video Instance Segmentation (CVPR2022 Oral)
-
-Detectron2 is Facebook AI Research's next generation library
-that provides state-of-the-art detection and segmentation algorithms.
-It is the successor of
-[Detectron](https://github.com/facebookresearch/Detectron/)
-and [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark/).
-It supports a number of computer vision research projects and production applications in Facebook.
+# VISOLO: Grid-Based Space-Time Aggregation for Efficient Online Video Instance Segmentation
 
 <div align="center">
   <img src="VISOLO.png"/>
 </div>
 
-### What's New
-* Includes new capabilities such as panoptic segmentation, Densepose, Cascade R-CNN, rotated bounding boxes, PointRend,
-  DeepLab, etc.
-* Used as a library to support building [research projects](projects/) on top of it.
-* Models can be exported to TorchScript format or Caffe2 format for deployment.
-* It [trains much faster](https://detectron2.readthedocs.io/notes/benchmarks.html).
+## Paper
+[VISOLO: Grid-Based Space-Time Aggregation for Efficient Online Video Instance Segmentation](https://arxiv.org/abs/2112.04177)
 
-See our [blog post](https://ai.facebook.com/blog/-detectron2-a-pytorch-based-modular-object-detection-library-/)
-to see more demos and learn about detectron2.
+### Note
+* Based on [detectron2](https://github.com/facebookresearch/detectron2).
+* The codes are under [projects/](projects/) folder, which follows the convention of detectron2.
+* You can easily import our project to the latest detectron2 by following below.
+    - inserting [projects/VISOLO](projects/VISOLO) folder
+    - updating [detectron2/projects/__init\_\_.py](detectron2/projects/__init__.py)
+    - updating [setup.py](./setup.py)
+    
+### Steps
 
-## Installation
+1. Installation.
+* Run a docker container and install the repository.
+* Compile a docker image following [docker/README.md](docker/README.md).
+* On top of the docker container, install the repository by the following command.
+```bash
+git clone https://github.com/SuHoHan95/VISOLO.git
+cd VISOLO
+pip install -e .
+pip install -r requirements.txt
+pip install git+https://github.com/youtubevos/cocoapi.git#"egg=pycocotools&subdirectory=PythonAPI"
+```
 
-See [installation instructions](https://detectron2.readthedocs.io/tutorials/install.html).
+2. Link datasets
 
-## Getting Started
+COCO
 
-See [Getting Started with Detectron2](https://detectron2.readthedocs.io/tutorials/getting_started.html),
-and the [Colab Notebook](https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5)
-to learn about basic usage.
+Download the json file([coco_to_ytvis2019.json](https://drive.google.com/file/d/17L33_woQh7eUMemCmnFDOgPUKi-2fTW0/view?usp=sharing))
+```bash
+cp coco_to_ytvis2019.json /path_to_coco_dataset/annotations
+cd projects/VISOLO
+mkdir -p datasets/coco
+ln -s /path_to_coco_dataset/annotations datasets/coco/annotations
+ln -s /path_to_coco_dataset/train2017 datasets/coco/train2017
+ln -s /path_to_coco_dataset/val2017 datasets/coco/val2017
+```
 
-Learn more at our [documentation](https://detectron2.readthedocs.org).
-And see [projects/](projects/) for some projects that are built on top of detectron2.
+YTVIS 2019
+```bash
+mkdir -p datasets/ytvis_2019
+ln -s /path_to_ytvis_2019_dataset/* datasets/ytvis_2019
+```
+we expect ytvis_2019 folder to be like
+```
+└── ytvis_2019
+    ├── train
+    │   ├── Annotations
+    │   ├── JPEGImages
+    │   └── meta.json
+    ├── valid
+    │   ├── Annotations
+    │   ├── JPEGImages
+    │   └── meta.json
+    ├── test
+    │   ├── Annotations
+    │   ├── JPEGImages
+    │   └── meta.json
+    ├── train.json
+    ├── valid.json
+    └── test.json
+```
 
-## Model Zoo and Baselines
+3. Training.
 
-We provide a large set of baseline results and trained models available for download in the [Detectron2 Model Zoo](MODEL_ZOO.md).
+* Training using 4 GPUS(TESLA V100-PCIE-32GB)
+* Pre-training on COCO dataset
+```bash
+python train_net.py --num-gpus 4 --config-file ./configs/base_coco.yaml OUTPUT_DIR ./checkpoint/coco/
+```
+* Fine-tuning on YTVIS2019 with pre-trained weights on COCO dataset ([r50_coco.pth](https://drive.google.com/file/d/1rb3i9MBtAjh3SJ2AWdgb3PvuPpF8Swpi/view?usp=sharing))
+```bash
+python train_net.py --num-gpus 4 --config-file ./configs/base_ytvis_coco.yaml OUTPUT_DIR ./checkpoint/ytvis_2019/ MODEL.WEIGHTS path/to/pre-trained-model.pth
+```
+
+4. Evaluating.
+
+Evaluating on YTVIS 2019
+```bash
+python train_net.py --eval-only --num-gpus 1 --config-file ./configs/base_ytvis_coco.yaml OUTPUT_DIR ./checkpoint/ytvis_2019/ MODEL.WEIGHTS path/to/model.pth
+```
+"results.json" saved in OUTPUT_DIR/inference/
+
+## Model Checkpoints (YTVIS 2019)
+Due to the small size of YTVIS dataset, the scores may fluctuate even if retrained with the same configuration.
+
+**Note:** The provided checkpoints are the ones with *highest* accuracies from multiple training attempts.
+
+| backbone  |  FPS |  AP  | AP50 | AP75 |  AR1 |  AR10 | download |
+|:----------|:----:|:----:|:----:|:----:|:----:|:-----:|:--------:|
+| [ResNet-50](projects/VISOLO/configs/base_ytvis_coco.yaml) | 40.0 | 38.6 | 56.3 | 43.7 | 35.7 | 42.5 | [model](https://drive.google.com/file/d/1kgr2WPXB1rv8U4aaE1FKjPNezCDzqMY3/view?usp=sharing) |
 
 ## License
 
-Detectron2 is released under the [Apache 2.0 license](LICENSE).
+VISOLO is released under the [Apache 2.0 license](LICENSE).
+This code is for non-commercial use only.
 
-## Citing Detectron2
+## Citing
 
-If you use Detectron2 in your research or wish to refer to the baseline results published in the [Model Zoo](MODEL_ZOO.md), please use the following BibTeX entry.
+If our work is useful in your project, please consider citing us.
 
-```BibTeX
-@misc{wu2019detectron2,
-  author =       {Yuxin Wu and Alexander Kirillov and Francisco Massa and
-                  Wan-Yen Lo and Ross Girshick},
-  title =        {Detectron2},
-  howpublished = {\url{https://github.com/facebookresearch/detectron2}},
-  year =         {2019}
+```BibTex
+@inproceedings{han2022visolo,
+  title={VISOLO: Grid-Based Space-Time Aggregation for Efficient Online Video Instance Segmentation},
+  author={Han, Su Ho and Hwang, Sukjun and Oh, Seoung Wug and Park, Yeonchool and Kim, Hyunwoo and Kim, Min-Jung and Kim, Seon Joo},
+  booktitle =  {Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  year={2022}
 }
 ```
+
+## Acknowledgement
+We highly appreciate all previous works that influenced our project.\
+Special thanks to facebookresearch for their wonderful codes that have been publicly released ([detectron2](https://github.com/facebookresearch/detectron2), [IFC](https://github.com/sukjunhwang/IFC))
+
+This research was supported by LG Electronics, and also by Institute of Information & communications Technology Planning & evaluation (IITP) grant funded by the Korea government(MSIT), Artificial Intelligence Graduate School Program, Yonsei University, under Grant 2020-0-01361.
