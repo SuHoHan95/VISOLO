@@ -1,3 +1,5 @@
+# VISOLO: Grid-Based Space-Time Aggregation for Efficient Online Video Instance Segmentation (CVPR2022 Oral)
+
 Detectron2 is Facebook AI Research's next generation library
 that provides state-of-the-art detection and segmentation algorithms.
 It is the successor of
