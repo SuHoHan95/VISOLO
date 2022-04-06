@@ -91,7 +91,7 @@ python train_net.py --eval-only --num-gpus 1 --config-file ./configs/base_ytvis_
 ## Model Checkpoints (YTVIS 2019)
 Due to the small size of YTVIS dataset, the scores may fluctuate even if retrained with the same configuration.
 
-**Note:** The provided checkpoints are the ones with *highest* accuracies from multiple training attempts.
+**Note:** The provided checkpoints are the ones with *highest* accuracy from multiple training attempts.
 
 | backbone  |  FPS |  AP  | AP50 | AP75 |  AR1 |  AR10 | download |
 |:----------|:----:|:----:|:----:|:----:|:----:|:-----:|:--------:|
@@ -100,6 +100,7 @@ Due to the small size of YTVIS dataset, the scores may fluctuate even if retrain
 ## License
 
 VISOLO is released under the [Apache 2.0 license](LICENSE).
+
 This code is for non-commercial use only.
 
 ## Citing
@@ -110,13 +111,11 @@ If our work is useful in your project, please consider citing us.
 @inproceedings{han2022visolo,
   title={VISOLO: Grid-Based Space-Time Aggregation for Efficient Online Video Instance Segmentation},
   author={Han, Su Ho and Hwang, Sukjun and Oh, Seoung Wug and Park, Yeonchool and Kim, Hyunwoo and Kim, Min-Jung and Kim, Seon Joo},
-  booktitle =  {Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  booktitle =  {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
   year={2022}
 }
 ```
 
 ## Acknowledgement
 We highly appreciate all previous works that influenced our project.\
-Special thanks to facebookresearch for their wonderful codes that have been publicly released ([detectron2](https://github.com/facebookresearch/detectron2), [IFC](https://github.com/sukjunhwang/IFC))
-
-This research was supported by LG Electronics, and also by Institute of Information & communications Technology Planning & evaluation (IITP) grant funded by the Korea government(MSIT), Artificial Intelligence Graduate School Program, Yonsei University, under Grant 2020-0-01361.
+Special thanks to facebookresearch and IFC authors for their wonderful codes that have been publicly released ([detectron2](https://github.com/facebookresearch/detectron2), [IFC](https://github.com/sukjunhwang/IFC)).
