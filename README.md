@@ -97,6 +97,9 @@ Due to the small size of YTVIS dataset, the scores may fluctuate even if retrain
 |:----------|:----:|:----:|:----:|:----:|:----:|:-----:|:--------:|
 | [ResNet-50](projects/VISOLO/configs/base_ytvis_coco.yaml) | 40.0 | 38.6 | 56.3 | 43.7 | 35.7 | 42.5 | [model](https://drive.google.com/file/d/1kgr2WPXB1rv8U4aaE1FKjPNezCDzqMY3/view?usp=sharing) |
 
+## Video Comparisons
+The overall flow of our VISOLO and the comparison of different VIS methods on the YouTube-VIS 2019 dataset are provided at https://youtu.be/j33H7vcJ2uU
+
 ## License
 
 VISOLO is released under the [Apache 2.0 license](LICENSE).
